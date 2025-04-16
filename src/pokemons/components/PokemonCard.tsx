@@ -16,7 +16,6 @@ export const PokemonCard: FC<Props> = ({ pokemon }) => {
       <div className="flex flex-col bg-white rounded overflow-hidden shadow-lg">
         <div className="flex flex-col items-center justify-center text-center p-6 bg-gray-800 border-b">
           <Image
-            key={pokemon.id}
             alt={pokemon.name}
             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`}
             width={100}
@@ -29,7 +28,7 @@ export const PokemonCard: FC<Props> = ({ pokemon }) => {
           </p>
           <div className="mt-5">
             <Link
-              href={`/dashboard/pokemon/${id}`}
+              href={`/dashboard/pokemon/${name}`}
               className="border rounded-full py-2 px-4 text-xs font-semibold text-gray-100"
             >
               Mas información

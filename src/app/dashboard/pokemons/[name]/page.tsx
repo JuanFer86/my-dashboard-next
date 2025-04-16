@@ -2,18 +2,17 @@ import { Pokemon } from "@/pokemons";
 import { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { getPokemonsNames } from "../page";
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: Promise<{ name: string }>;
 }
 
 // on build time
 export async function generateStaticParams() {
-  const static151Pokemons = Array.from({ length: 151 }).map(
-    (_, i) => `${i + 1}`
-  );
+  const static151Pokemons = await getPokemonsNames(151);
 
-  return static151Pokemons.map((id) => ({ id }));
+  return static151Pokemons.map(({ name }) => ({ name }));
   // return [
   //   {
   //     id: "1",
@@ -38,9 +37,9 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    const { id: paramId } = await params;
+    const { name: paramName } = await params;
 
-    const { id, name } = await getPokemon(paramId);
+    const { id, name } = await getPokemon(paramName);
 
     return {
       title: `${id} - ${name}`,
@@ -55,9 +54,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-const getPokemon = async (id: string): Promise<Pokemon> => {
+const getPokemon = async (name: string): Promise<Pokemon> => {
   try {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`, {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`, {
       // cache: "force-cache", // TODO: cambiar luego
       next: { revalidate: 60 * 60 * 30 * 6 }, // 1 min
     });
@@ -73,10 +72,10 @@ const getPokemon = async (id: string): Promise<Pokemon> => {
   }
 };
 
-export default async function PokemonPage({ params }: Props) {
-  const { id } = await params;
+export default async function PokemonNamePage({ params }: Props) {
+  const { name } = await params;
 
-  const pokemon = await getPokemon(id);
+  const pokemon = await getPokemon(name);
 
   return (
     <div className="flex mt-5 flex-col items-center text-slate-800">
